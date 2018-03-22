@@ -30,3 +30,8 @@
 *.exe
 *.out
 *.app
+/.vs
+/task5/.vs/task5/v15
+/task5/Debug/task5.tlog
+/task5/Debug
+/task5/x64/Debug

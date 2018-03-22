@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="External">
+      <UniqueIdentifier>{5ecaec11-4ad2-481b-9658-8508db6bcf04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Res">
+      <UniqueIdentifier>{4ab4b97b-5290-4508-8a68-c935f0188b14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External\stb">
+      <UniqueIdentifier>{e92bc57a-3189-402d-bca9-d5b58cfd49c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Res\Texture">
+      <UniqueIdentifier>{edb2b39d-2ba6-40ba-9b46-2b4af80b60b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Res\Shader">
+      <UniqueIdentifier>{c167e570-d85c-49fc-9b10-89b43d70d9bd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="External\glad.c">
+      <Filter>External</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Light.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Shader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Texture.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Camera.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="External\stb\stb_image.cpp">
+      <Filter>External\stb</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="External\glad.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="External\glfw3.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="External\glfw3native.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Shader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Texture.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Camera.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Light.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="External\stb\stb_image.h">
+      <Filter>External\stb</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="C:\Users\Qinja\Desktop\task3-master\res\texture\container2.png">
+      <Filter>Res\Texture</Filter>
+    </Image>
+    <Image Include="C:\Users\Qinja\Desktop\task3-master\res\texture\container2_specular.png">
+      <Filter>Res\Texture</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="External\glfw3dll.lib">
+      <Filter>External</Filter>
+    </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Res\Shader\DrawCube.fs">
+      <Filter>Res\Shader</Filter>
+    </None>
+    <None Include="Res\Shader\DrawCube.vs">
+      <Filter>Res\Shader</Filter>
+    </None>
+  </ItemGroup>
+</Project>
