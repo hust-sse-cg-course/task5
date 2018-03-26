@@ -15,7 +15,7 @@ float last_frame = 0.0f;
 
 float last_x = SCREEN_WIDTH / 2.0f, last_y = SCREEN_HRIGHT / 2.0f;
 
-Camera camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera = Camera(glm::vec3(3.0f, 3.0f, 3.0f));
 
 void ProcessInput(GLFWwindow *window)
 {
@@ -72,6 +72,7 @@ void ScrollCallback(GLFWwindow* window, double x_offset, double y_offset)
 
 int main()
 {
+
     // ---------------------gl初始化--------------------------
     // glfw初始化，采用的GL版本为3.3Core版
     glfwInit();
@@ -103,20 +104,22 @@ int main()
         return -1;
     }
 
+
+
     // 开启深度测试
     glEnable(GL_DEPTH_TEST);
     camera.flip_y = true;
     Shader cube_shader = Shader("res/shader/DrawCube.vs", "res/shader/DrawCube.fs");
 
     // 顶点数据
-    float vertices[] = {
+    float cubeVertices[] = {
         // positions           // normals         // texture coords
         -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f,
          0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f,
          0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f,
         -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f,
                                      
         -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f,
          0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f, 1.0f, 0.0f,
@@ -133,28 +136,28 @@ int main()
         -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f,
                                             
          0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f,
          0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f,
          0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f,
          0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f,
                                           
         -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f,
          0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f,
 
         -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f,
          0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f,
          0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f
     };
 
-    DirectLight dirLight = DirectLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.1f), glm::vec3(0.5f), glm::vec3(0.8f));
+    DirectLight dirLight = DirectLight(glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec3(0.2f), glm::vec3(0.5f), glm::vec3(0.8f));
 
     // ---------------------绑定顶点数组对象----------------------
     unsigned int vbo, cube_vao;
@@ -162,7 +165,7 @@ int main()
     glGenBuffers(1, &vbo);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
 
     glBindVertexArray(cube_vao);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
@@ -177,6 +180,8 @@ int main()
     unsigned int specular_map = Texture::LoadTextureFromFile("res/texture/container2_specular.png");
     cube_shader.SetInt("material.diffuse", 0);
     cube_shader.SetInt("material.specular", 1);
+
+	glEnable(GL_CULL_FACE);
 
     last_frame = glfwGetTime();
     while (!glfwWindowShouldClose(window))
@@ -208,15 +213,22 @@ int main()
         glBindTexture(GL_TEXTURE_2D, specular_map);
         glBindVertexArray(cube_vao);
 
+		glCullFace(GL_BACK);
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model, current_frame, glm::vec3(1.0f, 0.3f, 0.5f));
+        //model = glm::rotate(model, current_frame, glm::vec3(1.0f, 0.3f, 0.5f));
         cube_shader.SetMat4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glDrawArrays(GL_TRIANGLES, 0,36);
 
+		glCullFace(GL_FRONT);
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(10));
+		cube_shader.SetMat4("model", model);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDrawArrays(GL_TRIANGLES, 12, 6);
+		glDrawArrays(GL_TRIANGLES, 24, 6);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-
     glDeleteVertexArrays(1, &cube_vao);
     glDeleteBuffers(1, &vbo);
 
