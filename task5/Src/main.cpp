@@ -13,10 +13,14 @@ float SCREEN_HRIGHT = 720.0f;
 float delta_time = 0.0f;
 float last_frame = 0.0f;
 
+GLfloat near_plane = 1.0f, far_plane = 20.0f;
 float last_x = SCREEN_WIDTH / 2.0f, last_y = SCREEN_HRIGHT / 2.0f;
 
-Camera camera = Camera(glm::vec3(3.0f, 3.0f, 3.0f));
+const GLuint SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 
+Camera camera = Camera(glm::vec3(5.0f, 5.0f, -4.0f),glm::vec3(0,1,0),135,-30);
+
+void DrawScene(Shader shader, float current_frame);
 void ProcessInput(GLFWwindow *window)
 {
     float speed = camera.mouse_speed * delta_time;
@@ -104,12 +108,29 @@ int main()
         return -1;
     }
 
+	GLuint depthMapFBO;
+	glGenFramebuffers(1, &depthMapFBO);
+	GLuint depthMap;
+	glGenTextures(1, &depthMap);
+	glBindTexture(GL_TEXTURE_2D, depthMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+		SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
     // 开启深度测试
     glEnable(GL_DEPTH_TEST);
     camera.flip_y = true;
-    Shader cube_shader = Shader("res/shader/DrawCube.vs", "res/shader/DrawCube.fs");
+	Shader cube_shader = Shader("res/shader/DrawCube.vs", "res/shader/DrawCube.fs");
+	Shader shadowMap_shader = Shader("res/shader/ShadowMap.vs", "res/shader/ShadowMap.fs");
 
     // 顶点数据
     float cubeVertices[] = {
@@ -180,30 +201,45 @@ int main()
     unsigned int specular_map = Texture::LoadTextureFromFile("res/texture/container2_specular.png");
     cube_shader.SetInt("material.diffuse", 0);
     cube_shader.SetInt("material.specular", 1);
+	cube_shader.SetInt("depthMap", 2);
+
+	glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+	glm::mat4 lightView = glm::lookAt(glm::vec3(6, 6, 6), glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+	glm::mat4 lightPV = lightProjection * lightView;
 
 	glEnable(GL_CULL_FACE);
-
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     last_frame = glfwGetTime();
+
     while (!glfwWindowShouldClose(window))
     {
         float current_frame = glfwGetTime();
         delta_time = current_frame - last_frame;
         last_frame = current_frame;
-
         ProcessInput(window);
 
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+		glm::mat4 projection = glm::perspective(glm::radians(camera.zoom), SCREEN_WIDTH / SCREEN_HRIGHT, 0.1f, 100.0f);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+			glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+			glClear(GL_DEPTH_BUFFER_BIT);
+			shadowMap_shader.Use();
+			shadowMap_shader.SetMat4("lightPV", lightPV);
+			DrawScene(shadowMap_shader, current_frame);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
+		glViewport(0, 0, SCREEN_WIDTH, SCREEN_HRIGHT);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         cube_shader.Use();
         cube_shader.SetVec3("viewPos", camera.position);
         cube_shader.SetFloat("material.shininess", 32.0f);
+		cube_shader.SetMat4("lightPV", lightPV);
 
         // 平行光光源
         dirLight.Draw(cube_shader, "dirLight");
-
-        glm::mat4 view = camera.GetViewMatrix();
-        glm::mat4 projection = glm::perspective(glm::radians(camera.zoom), SCREEN_WIDTH / SCREEN_HRIGHT, 0.1f, 100.0f);
+		glm::mat4 view = camera.GetViewMatrix();
         cube_shader.SetMat4("projection", projection);
         cube_shader.SetMat4("view", view);
 
@@ -211,21 +247,11 @@ int main()
         glBindTexture(GL_TEXTURE_2D, diffuse_map);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, specular_map);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, depthMap);
         glBindVertexArray(cube_vao);
+		DrawScene(cube_shader, current_frame);
 
-		glCullFace(GL_BACK);
-        glm::mat4 model = glm::mat4(1.0f);
-        //model = glm::rotate(model, current_frame, glm::vec3(1.0f, 0.3f, 0.5f));
-        cube_shader.SetMat4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0,36);
-
-		glCullFace(GL_FRONT);
-		model = glm::mat4(1.0f);
-		model = glm::scale(model, glm::vec3(10));
-		cube_shader.SetMat4("model", model);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-		glDrawArrays(GL_TRIANGLES, 12, 6);
-		glDrawArrays(GL_TRIANGLES, 24, 6);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -234,4 +260,35 @@ int main()
 
     glfwTerminate();
     return 0;
+}
+
+
+void DrawScene(Shader shader,float current_frame)
+{
+	//画地板
+	glCullFace(GL_FRONT);
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0, 4.5f, 0));
+	model = glm::scale(model, glm::vec3(10));
+	shader.SetMat4("model", model);
+	glDrawArrays(GL_TRIANGLES, 24, 6);
+
+	//画静止在地板上的方块
+	glCullFace(GL_BACK);
+	model = glm::mat4(1.0f);
+	shader.SetMat4("model", model);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+
+	//画静止悬浮的方块
+	model = glm::translate(model, glm::vec3(1.8f, 1.5f, 2.3f));
+	shader.SetMat4("model", model);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	model = glm::translate(model, glm::vec3(-2.8f, -1.0f, 1.1f));
+	shader.SetMat4("model", model);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	//画旋转的方块
+	model = glm::translate(model, glm::vec3(2.8f, 1.2f, -4.1f));
+	model = glm::rotate(model, current_frame, glm::vec3(1.0f, 0.3f, 0.5f));
+	shader.SetMat4("model", model);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
 }

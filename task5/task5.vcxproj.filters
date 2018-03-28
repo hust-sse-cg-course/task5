@@ -98,5 +98,11 @@
     <None Include="Res\Shader\DrawCube.vs">
       <Filter>Res\Shader</Filter>
     </None>
+    <None Include="Res\Shader\ShadowMap.fs">
+      <Filter>Res\Shader</Filter>
+    </None>
+    <None Include="Res\Shader\ShadowMap.vs">
+      <Filter>Res\Shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

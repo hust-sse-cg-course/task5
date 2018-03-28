@@ -70,7 +70,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>D:\Workspace\Git Repository\task5\task5\Include;D:\Workspace\Git Repository\task5\task5\External;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\Include;$(ProjectDir)\External;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -145,6 +145,8 @@
   <ItemGroup>
     <None Include="Res\Shader\DrawCube.fs" />
     <None Include="Res\Shader\DrawCube.vs" />
+    <None Include="Res\Shader\ShadowMap.fs" />
+    <None Include="Res\Shader\ShadowMap.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
